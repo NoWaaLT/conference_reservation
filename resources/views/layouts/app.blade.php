@@ -29,7 +29,7 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')  <!-- This will show the content of the page -->
             </main>
         </div>
     </body>

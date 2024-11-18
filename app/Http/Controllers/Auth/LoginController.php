@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -36,5 +37,22 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // Check user role and redirect accordingly
+        if ($user->role === 'client') {
+            return redirect()->route('conferences.index'); // Redirect client users to the conference list
+        }
+
+        // You can add additional checks for other roles here
+        // For example, redirect to admin dashboard if role is admin
+        if ($user->role === 'administrator') {
+            return redirect()->route('admin.dashboard'); // Assuming you have a dashboard route
+        }
+
+        // Default fallback
+        return redirect()->route('home');
     }
 }

@@ -45,6 +45,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+
+        $user = Auth::user();
+        if ($user->role === 'client') {
+            return redirect()->intended('/conferences');
+        }
+
+        return redirect('/');
     }
 }
