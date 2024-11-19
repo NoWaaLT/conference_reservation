@@ -34,7 +34,13 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('/conferences');
         }
 
-        // return redirect()->intended(route('dashboard', absolute: false));
+        if($user->role === 'employee') {
+            return redirect()->intended('/employee/conferences');
+        }
+
+        if ($user->role === 'administrator') {
+            return redirect()->intended('/admin/home');
+        }
 
         return redirect('/');
     }

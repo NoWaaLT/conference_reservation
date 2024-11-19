@@ -31,14 +31,17 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'client',
         ]);
 
         event(new Registered($user));
@@ -49,6 +52,14 @@ class RegisteredUserController extends Controller
         $user = Auth::user();
         if ($user->role === 'client') {
             return redirect()->intended('/conferences');
+        }
+
+        if($user->role === 'employee') {
+            return redirect()->intended('/employee/conferences');
+        }
+
+        if ($user->role === 'administrator') {
+            return redirect()->intended('/admin/home');
         }
 
         return redirect('/');
