@@ -6,7 +6,7 @@
     <ul>
         @foreach ($users as $user)
             <li>
-                {{ $user->name }} {{ $user->surname }} - {{ $user->email }} - {{ $user->role }}
+                {{ $user->name }} {{ $user->surname }} {{ $user->email }}
                 <a href="{{ route('admin.users.edit', $user->id) }}">Edit</a>
                 <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline;">
                     @csrf

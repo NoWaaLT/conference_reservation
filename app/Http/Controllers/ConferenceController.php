@@ -30,6 +30,11 @@ class ConferenceController extends Controller
         $conference = Conference::findOrFail($id);
         $user = Auth::user();
 
+        // Check if the user has the client role
+        if ($user->role !== 'client') {
+            return redirect()->back()->with('error', 'Only clients can register for conferences.');
+        }
+
         // Check if the user is already registered
         if ($user->registrations()->where('conference_id', $id)->exists()) {
             return redirect()->back()->with('error', 'You are already registered for this conference.');
@@ -42,18 +47,12 @@ class ConferenceController extends Controller
 
         return redirect()->back()->with('success', 'Successfully registered for the conference!');
     }
-
     // Show conferences for employees
     public function employee()
     {
         $currentDate = Carbon::now();
-        $endedConferences = Conference::where('date', '<', $currentDate)->get();
-        $upcomingConferences = Conference::where('date', '>=', $currentDate)->get();
-
-        // Log::info('Ended Conferences: ', $endedConferences->toArray());
-        // Log::info('Upcoming Conferences: ', $upcomingConferences->toArray());
-
-        // dd($endedConferences, $upcomingConferences);
+        $endedConferences = Conference::where('datetime', '<', $currentDate)->get();
+        $upcomingConferences = Conference::where('datetime', '>=', $currentDate)->get();
 
         return view('conferences.employee', compact('endedConferences', 'upcomingConferences'));
     }
@@ -86,14 +85,22 @@ class ConferenceController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'date' => 'required|date',
+            'datetime' => 'required|date_format:Y-m-d\TH:i',
             'location' => 'required|string|max:255',
+            'lectors' => 'required|array',
+            'lectors.*.name' => 'required|string|max:255',
+            'lectors.*.surname' => 'required|string|max:255',
         ]);
 
-        Conference::create($request->all());
+        $conference = Conference::create($request->only(['title', 'description', 'datetime', 'location']));
+
+        foreach ($request->lectors as $lectorData) {
+            $conference->lectors()->create($lectorData);
+        }
 
         return redirect()->route('admin.conferences.index')->with('success', 'Conference created successfully.');
     }
+
 
     // Show the form for editing the specified conference
     public function edit(Conference $conference)
@@ -101,17 +108,25 @@ class ConferenceController extends Controller
         return view('admin.conferences.edit', compact('conference'));
     }
 
-    // Update the specified conference in storage
     public function update(Request $request, Conference $conference)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'date' => 'required|date',
+            'datetime' => 'required|date_format:Y-m-d\TH:i',
             'location' => 'required|string|max:255',
+            'lectors' => 'required|array',
+            'lectors.*.name' => 'required|string|max:255',
+            'lectors.*.surname' => 'required|string|max:255',
         ]);
 
-        $conference->update($request->all());
+        $conference->update($request->only(['title', 'description', 'datetime', 'location']));
+
+        // Delete existing lectors and create new ones
+        $conference->lectors()->delete();
+        foreach ($request->lectors as $lectorData) {
+            $conference->lectors()->create($lectorData);
+        }
 
         return redirect()->route('admin.conferences.index')->with('success', 'Conference updated successfully.');
     }
@@ -119,6 +134,10 @@ class ConferenceController extends Controller
     // Remove the specified conference from storage
     public function destroy(Conference $conference)
     {
+        if ($conference->date < Carbon::now()) {
+            return redirect()->route('admin.conferences.index')->with('error', 'You cannot delete a conference that has already ended.');
+        }
+
         $conference->delete();
 
         return redirect()->route('admin.conferences.index')->with('success', 'Conference deleted successfully.');

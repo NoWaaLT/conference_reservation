@@ -7,7 +7,8 @@
     <ul>
         @forelse ($endedConferences as $conference)
             <li>
-                <a href="{{ route('conferences.attendees', $conference->id) }}">{{ $conference->title }}</a>
+                <a href="{{ route('conferences.show', $conference->id) }}">{{ $conference->title }}</a>
+                - <a href="{{ route('conferences.attendees', $conference->id) }}">View Attendees</a>
             </li>
         @empty
             <li>No ended conferences available.</li>
@@ -20,7 +21,8 @@
     <ul>
         @forelse ($upcomingConferences as $conference)
             <li>
-                <a href="{{ route('conferences.attendees', $conference->id) }}">{{ $conference->title }}</a>
+                <a href="{{ route('conferences.show', $conference->id) }}">{{ $conference->title }}</a>
+                - <a href="{{ route('conferences.attendees', $conference->id) }}">View Attendees</a>
             </li>
         @empty
             <li>No upcoming conferences available.</li>
