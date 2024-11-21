@@ -1,9 +1,8 @@
-{{-- conferences/index.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
     <div class="container">
-        <h1>Conferences</h1>
+        <h1>{{ __('messages.conferences') }}</h1>
         <ul>
             @foreach ($conferences as $conference)
                 <li>

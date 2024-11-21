@@ -3,8 +3,8 @@
 @section('content')
     <h1>{{ $conference->title }}</h1>
     <p>{{ $conference->description }}</p>
-    <p>Date and Time: {{ $conference->datetime->format('Y-m-d H:i') }}</p>
-    <p>Location: {{ $conference->location }}</p>
+    <p>{{ __('messages.datetime') }}: {{ $conference->datetime->format('Y-m-d H:i') }}</p>
+    <p>{{ __('messages.location') }}: {{ $conference->location }}</p>
 
     @if (session('success'))
         <div class="alert alert-success">
@@ -22,12 +22,12 @@
         @if (!Auth::user()->registrations()->where('conference_id', $conference->id)->exists())
             <form action="{{ route('conferences.register', $conference->id) }}" method="POST">
                 @csrf
-                <button type="submit">Register</button>
+                <button type="submit">{{ __('messages.register') }}</button>
             </form>
         @else
-            <p>You are already registered for this conference.</p>
+            <p>{{ __('messages.already_registered') }}</p>
         @endif
     @else
-        <p>Only clients can register for conferences.</p>
+        <p>{{ __('messages.only_clients_can_register') }}</p>
     @endif
 @endsection
