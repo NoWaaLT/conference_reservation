@@ -1,31 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Conferences</h1>
+    <h1>{{ __('messages.conferences') }}</h1>
 
-    <h2>Ended Conferences</h2>
+    <h2>{{ __('messages.ended_conferences') }}</h2>
     <ul>
         @forelse ($endedConferences as $conference)
             <li>
                 <a href="{{ route('conferences.show', $conference->id) }}">{{ $conference->title }}</a>
-                - <a href="{{ route('conferences.attendees', $conference->id) }}">View Attendees</a>
+                - <a href="{{ route('conferences.attendees', $conference->id) }}">{{ __('messages.view_attendees') }}</a>
             </li>
         @empty
-            <li>No ended conferences available.</li>
+            <li>{{ __('messages.no_ended_conferences') }}</li>
         @endforelse
     </ul>
 
     <hr>
 
-    <h2>Upcoming Conferences</h2>
+    <h2>{{ __('messages.upcoming_conferences') }}</h2>
     <ul>
         @forelse ($upcomingConferences as $conference)
             <li>
                 <a href="{{ route('conferences.show', $conference->id) }}">{{ $conference->title }}</a>
-                - <a href="{{ route('conferences.attendees', $conference->id) }}">View Attendees</a>
+                - <a href="{{ route('conferences.attendees', $conference->id) }}">{{ __('messages.view_attendees') }}</a>
             </li>
         @empty
-            <li>No upcoming conferences available.</li>
+            <li>{{ __('messages.no_upcoming_conferences') }}</li>
         @endforelse
     </ul>
 @endsection
