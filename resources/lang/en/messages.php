@@ -33,8 +33,9 @@ return [
     'employee' => 'Employee',
     'admin' => 'Admin',
     'manage_users' => 'Manage Users',
-    'administrator_homepage' => 'Administrator Homepage',
+    'administrator_homepage' => 'Choose your action',
     'administrate_conferences' => 'Administrate Conferences',
     'attendees_for' => 'Attendees for',
     'back_to_conferences' => 'Back to Conferences',
+    'no_attendees' => 'No attendees for this conference.',
 ];
