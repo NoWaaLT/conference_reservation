@@ -62,6 +62,6 @@ class RegisteredUserController extends Controller
             return redirect()->intended('/admin/home');
         }
 
-        return redirect('/');
+        return redirect('/conferences');
     }
 }
